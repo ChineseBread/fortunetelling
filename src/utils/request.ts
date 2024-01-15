@@ -1,8 +1,8 @@
 import { apiKey, apiConfig, storageKey } from '@/config'
 import axios, { type AxiosRequestConfig } from 'axios'
-const BASE_URL = import.meta.env.API_KEY as string
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+import { getLocalStorage } from '.'
+import { IAuth } from '@/store'
+const BASE_URL = import.meta.env.VITE_API_KEY as string
 const convertToCamelCase = (obj: any): any => {
   if (Array.isArray(obj)) {
     return obj.map(convertToCamelCase)
@@ -24,18 +24,20 @@ const convertToCamelCase = (obj: any): any => {
 
 interface IRequestOptions {
   reqOptions?: AxiosRequestConfig
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   preHandle?: (data: unknown) => any
 }
 
 const http = axios.create({
   baseURL: BASE_URL,
+  timeout: 10000, // 10秒超时
 })
 
 // 用户请求时拦截
 http.interceptors.request.use((config) => {
   // 拿token
-  const { token } = JSON.parse(localStorage.getItem(storageKey.Auth) || '{}')
+  const { token } = getLocalStorage<IAuth>(storageKey.USER_INFO) || {}
+  // const { token } = JSON.parse(localStorage.getItem(storageKey.Auth) || '{}')
   if (!token) return config
   const method = config.method
   if (method === 'post') {
@@ -76,5 +78,5 @@ export const request = async (key: apiKey, options: IRequestOptions) => {
     url: apiConfig[key],
     ...reqOptions,
   })
-  return preHandle ? preHandle(convertToCamelCase(result)) : convertToCamelCase(result)
+  return preHandle ? preHandle(convertToCamelCase(result.data)) : convertToCamelCase(result.data)
 }

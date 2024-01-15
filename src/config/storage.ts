@@ -1,3 +1,3 @@
 export const storageKey = {
-  Auth: 'auth',
+  USER_INFO: 'user_info',
 }

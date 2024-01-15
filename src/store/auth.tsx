@@ -1,11 +1,11 @@
 // 用户权限透传
 import React, { PropsWithChildren, useState } from 'react'
-import { authType } from '@/config'
+import { authKey } from '@/config'
 
 export interface IAuth {
   email: string
   password: string
-  type: keyof typeof authType
+  type: authKey
   token?: string
 }
 
