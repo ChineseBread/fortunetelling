@@ -10,8 +10,9 @@
     "preview": "vite preview"
   },
   "lint-staged": {
-    "*.{js,jsx}": [
+    "src/**/*.{js,jsx,ts,tsx}": [
       "npm run lint",
+      "eslint --fix",
       "git add"
     ]
   },
